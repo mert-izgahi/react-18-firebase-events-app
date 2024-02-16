@@ -8,11 +8,12 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
 import ProfilePage from "./pages/ProfilePage";
+import Layout from "./layout";
 function App() {
     return (
-        <>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
+        <Routes>
+            <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
                 <Route path="/events" element={<EventsPage />} />
                 <Route path="/events/:slug" element={<EventPage />} />
                 <Route path="/events/create" element={<CreateEventPage />} />
@@ -24,8 +25,8 @@ function App() {
                     element={<ForgetPasswordPage />}
                 />
                 <Route path="/profile" element={<ProfilePage />} />
-            </Routes>
-        </>
+            </Route>
+        </Routes>
     );
 }
 
