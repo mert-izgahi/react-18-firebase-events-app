@@ -13,6 +13,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { categories } from "../../constants/categories";
 import { useState } from "react";
+import { auth, db, storage } from "../../lib/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const eventFormSchema = Yup.object().shape({
     title: Yup.string().required(),
@@ -21,7 +26,7 @@ const eventFormSchema = Yup.object().shape({
     date: Yup.date()
         .required("Required")
         .min(new Date(), "Cannot be in the past"),
-    images: Yup.array().required(),
+    images: Yup.array(),
     category: Yup.string().required(),
     isFeatured: Yup.boolean().required(),
     organizer: Yup.string().required(),
@@ -31,45 +36,61 @@ const eventFormSchema = Yup.object().shape({
 });
 
 function EventForm() {
+    const user = auth.currentUser;
+    const [images, setImages] = useState<File[] | null>([]);
+    const navigate = useNavigate();
     const formik = useFormik<Yup.InferType<typeof eventFormSchema>>({
         initialValues: {
-            title: "",
-            description: "",
-            location: "",
+            title: "Test Event",
+            description: "Description",
+            location: "Türkyie,istanbul",
             date: new Date(),
             images: [],
-            category: "",
+            category: "Music",
             isFeatured: false,
-            organizer: "",
-            ticketLink: "",
-            ticketPrice: 0,
-            capacity: 0,
+            organizer: user?.uid || "",
+            ticketLink: "https://google.com",
+            ticketPrice: 100,
+            capacity: 10,
         },
         validationSchema: eventFormSchema,
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            try {
+                if (user) {
+                    values.organizer = user.uid;
+                    // upload images
+
+                    let _images: string[] = [];
+                    if (images && images.length > 0) {
+                        for (let i = 0; i < images.length; i++) {
+                            const image = images[i];
+                            const imageRef = ref(
+                                storage,
+                                `images/${image.name}`
+                            );
+                            await uploadBytes(imageRef, image).then(
+                                (snapshot) => {
+                                    getDownloadURL(snapshot.ref).then((url) => {
+                                        _images.push(url);
+                                    });
+                                }
+                            );
+                        }
+                    }
+
+                    values.images = _images;
+
+                    const eventsCollection = collection(db, "events");
+                    await addDoc(eventsCollection, values);
+                    toast.success("Event created successfully");
+                    navigate(`/events`);
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error("Something went wrong");
+            }
         },
     });
-
-    const [images, setImages] = useState<string[]>([]);
-    const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            const files = Array.from(event.target.files);
-            files.forEach((file) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    if (reader.readyState === 2) {
-                        setImages((old) => [...old, reader.result as string]);
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-
-            formik.setFieldValue("images", images);
-        }
-    };
-    console.log(formik.errors);
-    console.log(formik.values);
 
     return (
         <form onSubmit={formik.handleSubmit} noValidate>
@@ -287,7 +308,13 @@ function EventForm() {
                             sx={{
                                 padding: "3px",
                             }}
-                            onChange={onImageChange}
+                            onChange={(e) => {
+                                const files = e.target.files;
+                                if (files) {
+                                    setImages(Array.from(files));
+                                }
+                            }}
+                            // onChange={onImageChange}
                         />
                         {formik.errors.images && formik.touched.images && (
                             <FormErrorMessage>
@@ -298,7 +325,13 @@ function EventForm() {
                 </GridItem>
 
                 <GridItem>
-                    <Button type="submit" mt={4} w="full">
+                    <Button
+                        isLoading={formik.isSubmitting}
+                        disabled={formik.isSubmitting}
+                        type="submit"
+                        mt={4}
+                        w="full"
+                    >
                         Submit
                     </Button>
                 </GridItem>

@@ -9,7 +9,14 @@ import {
     Input,
     SimpleGrid,
 } from "@chakra-ui/react";
-import { auth } from "../../lib/firebase";
+import { auth, db } from "../../lib/firebase";
+import {
+    collection,
+    doc,
+    getDoc,
+    serverTimestamp,
+    setDoc,
+} from "firebase/firestore";
 import toast from "react-hot-toast";
 import { updateProfile } from "firebase/auth";
 
@@ -30,6 +37,16 @@ function ProfileForm() {
                 await updateProfile(user!, {
                     displayName: values.fullName,
                 });
+
+                const docRef = doc(db, "users", user!.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    await setDoc(docRef, {
+                        ...docSnap.data(),
+                        fullName: values.fullName,
+                    });
+                }
 
                 toast.success("Profile updated successfully");
             } catch (error) {
