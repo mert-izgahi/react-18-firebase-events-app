@@ -2,7 +2,7 @@ import { Button, Container, Flex, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import Logo from "../components/ui/Logo";
 function Navbar() {
-    const isAuthenticated = true;
+    const isAuthenticated = false;
     return (
         <Flex as="nav" p={4}>
             <Container maxW="container.xl">
@@ -25,9 +25,13 @@ function Navbar() {
 
                         <Flex align="center" gap="4" ml="auto">
                             {!isAuthenticated && (
-                                <Text as={Link} to={"/login"}>
+                                <Button
+                                    size={["sm", "md"]}
+                                    as={Link}
+                                    to={"/login"}
+                                >
                                     Login
-                                </Text>
+                                </Button>
                             )}
                             {isAuthenticated && (
                                 <Button
