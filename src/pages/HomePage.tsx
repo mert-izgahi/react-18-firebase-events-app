@@ -1,6 +1,53 @@
-import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Center,
+    Container,
+    Flex,
+    Heading,
+    Text,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-
+import { EventType } from "../types";
+import EventsGrid from "../components/ui/EventsGrid";
+const events: EventType[] = [
+    {
+        id: "1",
+        title: "Event 1",
+        description: "Event 1 description",
+        date: "2022-01-01",
+        location: "Location 1",
+        images: [
+            "https://source.unsplash.com/random?music",
+            "https://source.unsplash.com/random?music",
+        ],
+        category: "Music",
+        isFeatured: true,
+        organizer: "Organizer 1",
+        ticketLink: "https://example.com/ticket/1",
+        ticketPrice: 10,
+        capacity: 100,
+        soldTickets: 0,
+    },
+    {
+        id: "2",
+        title: "Event 2",
+        description: "Event 2 description",
+        date: "2022-01-01",
+        location: "Location 2",
+        images: [
+            "https://source.unsplash.com/random?sports",
+            "https://source.unsplash.com/random?sports",
+        ],
+        category: "Sports",
+        isFeatured: true,
+        organizer: "Organizer 2",
+        ticketLink: "https://example.com/ticket/2",
+        ticketPrice: 10,
+        capacity: 100,
+        soldTickets: 0,
+    },
+];
 function HomePage() {
     return (
         <>
@@ -66,6 +113,20 @@ function HomePage() {
                         </Link>
                     </Flex>
                 </Center>
+            </Box>
+
+            <Box as="section" p={8}>
+                <Container maxW="container.xl">
+                    <Heading
+                        fontSize={["xl", "2xl", "3xl"]}
+                        fontWeight="bold"
+                        textAlign={"center"}
+                        mb="8"
+                    >
+                        Featured Events
+                    </Heading>
+                    <EventsGrid events={events} />
+                </Container>
             </Box>
         </>
     );

@@ -1,0 +1,15 @@
+export type EventType = {
+    id?: string;
+    title: string;
+    description: string;
+    date: string;
+    location: string;
+    images: string[];
+    category: string;
+    isFeatured: boolean;
+    organizer: string;
+    ticketLink: string;
+    ticketPrice: number;
+    capacity: number;
+    soldTickets: number;
+};
