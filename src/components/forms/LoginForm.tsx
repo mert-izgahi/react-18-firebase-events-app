@@ -14,6 +14,16 @@ import {
 } from "@chakra-ui/react";
 import { IoLogoGoogle } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { auth, db } from "../../lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import toast from "react-hot-toast";
+import {
+    collection,
+    doc,
+    getDoc,
+    serverTimestamp,
+    setDoc,
+} from "firebase/firestore";
 
 const loginFormSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
@@ -27,8 +37,28 @@ function LoginForm() {
             password: "",
         },
         validationSchema: loginFormSchema,
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            try {
+                const userCredential = await signInWithEmailAndPassword(
+                    auth,
+                    values.email,
+                    values.password
+                );
+
+                const user = await userCredential.user;
+
+                // check if user exists in the database
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
+                    toast.error("User does not exist");
+                }
+
+                toast.success("Login successful");
+            } catch (error) {
+                console.log(error);
+                toast.error("Something went wrong");
+            }
         },
     });
     return (
@@ -88,7 +118,12 @@ function LoginForm() {
                 </GridItem>
 
                 <GridItem>
-                    <Button type="submit" w="full">
+                    <Button
+                        type="submit"
+                        w="full"
+                        disabled={formik.isSubmitting}
+                        isLoading={formik.isSubmitting}
+                    >
                         Submit
                     </Button>
                 </GridItem>
