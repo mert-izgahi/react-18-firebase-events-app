@@ -13,7 +13,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { IoLogoGoogle } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../../lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -31,6 +31,7 @@ const loginFormSchema = Yup.object().shape({
 });
 
 function LoginForm() {
+    const navigate = useNavigate();
     const formik = useFormik<Yup.InferType<typeof loginFormSchema>>({
         initialValues: {
             email: "",
@@ -55,6 +56,7 @@ function LoginForm() {
                 }
 
                 toast.success("Login successful");
+                navigate("/profile");
             } catch (error) {
                 console.log(error);
                 toast.error("Something went wrong");

@@ -13,7 +13,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { IoLogoGoogle } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../../lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -32,6 +32,7 @@ const registerFormSchema = Yup.object().shape({
 });
 
 function RegisterForm() {
+    const navigate = useNavigate();
     const formik = useFormik<Yup.InferType<typeof registerFormSchema>>({
         initialValues: {
             fullName: "",
@@ -66,6 +67,7 @@ function RegisterForm() {
                     });
 
                     toast.success("Account created successfully");
+                    navigate("/profile");
                 } else {
                     toast.error("User already exists");
                 }
