@@ -10,6 +10,8 @@ import ForgetPasswordPage from "./pages/ForgetPasswordPage";
 import ProfilePage from "./pages/ProfilePage";
 import Layout from "./layout";
 function App() {
+    // console.log(import.meta.env.VITE_API_URL);
+
     return (
         <Routes>
             <Route path="/" element={<Layout />}>

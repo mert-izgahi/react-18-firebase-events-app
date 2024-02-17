@@ -14,6 +14,16 @@ import {
 } from "@chakra-ui/react";
 import { IoLogoGoogle } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { auth, db } from "../../lib/firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import toast from "react-hot-toast";
+import {
+    collection,
+    doc,
+    getDoc,
+    serverTimestamp,
+    setDoc,
+} from "firebase/firestore";
 
 const registerFormSchema = Yup.object().shape({
     fullName: Yup.string().required("Required"),
@@ -29,8 +39,40 @@ function RegisterForm() {
             password: "",
         },
         validationSchema: registerFormSchema,
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth,
+                    values.email,
+                    values.password
+                );
+
+                const user = await userCredential.user;
+
+                // update user profile
+                await updateProfile(user, {
+                    displayName: values.fullName,
+                });
+
+                // check if user exists in the database
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
+                    await setDoc(docRef, {
+                        fullName: values.fullName,
+                        email: values.email,
+                        uid: user.uid,
+                        createdAt: serverTimestamp(),
+                    });
+
+                    toast.success("Account created successfully");
+                } else {
+                    toast.error("User already exists");
+                }
+            } catch (error: any) {
+                console.log(error);
+                toast.error(error.message);
+            }
         },
     });
     return (
@@ -113,7 +155,12 @@ function RegisterForm() {
                 </GridItem>
 
                 <GridItem>
-                    <Button type="submit" w="full">
+                    <Button
+                        type="submit"
+                        w="full"
+                        isDisabled={formik.isSubmitting}
+                        isLoading={formik.isSubmitting}
+                    >
                         Create Account
                     </Button>
                 </GridItem>
