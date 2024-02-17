@@ -45,7 +45,7 @@ function EventCard({ event }: { event: EventType }) {
                         <Text ml={2}>{event.location}</Text>
                     </Flex>
                 </Flex>
-                <Heading as={Link} to={`/events/${event.id}`} size="md">
+                <Heading as={Link} to={`/events/${event?.slug}`} size="md">
                     {event.title}
                 </Heading>
                 <Text>{event.description}</Text>

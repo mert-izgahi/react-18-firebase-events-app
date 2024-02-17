@@ -8,46 +8,8 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { EventType } from "../types";
 import EventsGrid from "../components/ui/EventsGrid";
-const events: EventType[] = [
-    {
-        id: "1",
-        title: "Event 1",
-        description: "Event 1 description",
-        date: "2022-01-01",
-        location: "Location 1",
-        images: [
-            "https://source.unsplash.com/random?music",
-            "https://source.unsplash.com/random?music",
-        ],
-        category: "Music",
-        isFeatured: true,
-        organizer: "Organizer 1",
-        ticketLink: "https://example.com/ticket/1",
-        ticketPrice: 10,
-        capacity: 100,
-        soldTickets: 0,
-    },
-    {
-        id: "2",
-        title: "Event 2",
-        description: "Event 2 description",
-        date: "2022-01-01",
-        location: "Location 2",
-        images: [
-            "https://source.unsplash.com/random?sports",
-            "https://source.unsplash.com/random?sports",
-        ],
-        category: "Sports",
-        isFeatured: true,
-        organizer: "Organizer 2",
-        ticketLink: "https://example.com/ticket/2",
-        ticketPrice: 10,
-        capacity: 100,
-        soldTickets: 0,
-    },
-];
+import events from "../../dummy";
 function HomePage() {
     return (
         <>
