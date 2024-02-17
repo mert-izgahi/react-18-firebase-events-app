@@ -9,17 +9,19 @@ function Navbar() {
                 <Flex justify="flex-start" gap="8" align="center">
                     <Logo />
                     <Flex gap="4" align="center" flex={1}>
-                        <Text as={Link} to={"/"}>
-                            Home
-                        </Text>
-                        <Text as={Link} to={"/events"}>
-                            Events
-                        </Text>
-                        {isAuthenticated && (
-                            <Text as={Link} to={"/profile"}>
-                                Profile
+                        <Flex align="center" gap="4" display={["none", "flex"]}>
+                            <Text as={Link} to={"/"}>
+                                Home
                             </Text>
-                        )}
+                            <Text as={Link} to={"/events"}>
+                                Events
+                            </Text>
+                            {isAuthenticated && (
+                                <Text as={Link} to={"/profile"}>
+                                    Profile
+                                </Text>
+                            )}
+                        </Flex>
 
                         <Flex align="center" gap="4" ml="auto">
                             {!isAuthenticated && (
@@ -27,15 +29,19 @@ function Navbar() {
                                     Login
                                 </Text>
                             )}
-
                             {isAuthenticated && (
-                                <Button as={Link} to={"/events/create"}>
+                                <Button
+                                    size={["sm", "md"]}
+                                    as={Link}
+                                    to={"/events/create"}
+                                >
                                     Post Event
                                 </Button>
                             )}
-
                             {isAuthenticated && (
-                                <Button variant="outline">Logout</Button>
+                                <Button size={["sm", "md"]} variant="outline">
+                                    Logout
+                                </Button>
                             )}
                         </Flex>
                     </Flex>
