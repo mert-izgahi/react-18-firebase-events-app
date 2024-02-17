@@ -78,10 +78,13 @@ function EventForm() {
                         }
                     }
 
-                    values.images = _images;
-
                     const eventsCollection = collection(db, "events");
-                    await addDoc(eventsCollection, values);
+                    await addDoc(
+                        eventsCollection,
+                        JSON.parse(
+                            JSON.stringify({ ...values, images: _images })
+                        )
+                    );
                     toast.success("Event created successfully");
                     navigate(`/events`);
                 }

@@ -17,7 +17,7 @@ function EventCard({ event }: { event: EventType }) {
         <Card>
             <CardHeader p={0} position="relative">
                 <Image
-                    src={event.images[0]}
+                    src={event?.images[0]}
                     alt={event.title}
                     height="250px"
                     objectFit="cover"
@@ -36,7 +36,9 @@ function EventCard({ event }: { event: EventType }) {
                         <Text color="primary.500">
                             <IoCalendar />
                         </Text>
-                        <Text ml={2}>{event.date}</Text>
+                        <Text ml={2}>
+                            {new Date(event.date).toDateString()}
+                        </Text>
                     </Flex>
                     <Flex align="center">
                         <Text color="primary.500">

@@ -9,8 +9,30 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import EventsGrid from "../components/ui/EventsGrid";
-import events from "../../dummy";
+import { useEffect, useState } from "react";
+import { EventType } from "../types";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../lib/firebase";
 function HomePage() {
+    const [events, setEvents] = useState<EventType[]>([]);
+    useEffect(() => {
+        async function fetchEvents() {
+            const eventsCollection = collection(db, "events");
+            const eventsSnapshot = await getDocs(eventsCollection);
+            const eventsList = eventsSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+
+            if (eventsList) {
+                setEvents(eventsList as EventType[]);
+            }
+        }
+
+        fetchEvents();
+
+        return () => console.log("unmounted");
+    }, []);
     return (
         <>
             <Box
@@ -87,7 +109,8 @@ function HomePage() {
                     >
                         Featured Events
                     </Heading>
-                    <EventsGrid events={events} />
+
+                    {events && <EventsGrid events={events} />}
                 </Container>
             </Box>
         </>
