@@ -14,3 +14,9 @@ export type EventType = {
     capacity: number;
     soldTickets: number;
 };
+
+export type CategoryType = {
+    id: string;
+    name: string;
+    slug: string;
+};

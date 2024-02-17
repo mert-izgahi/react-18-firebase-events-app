@@ -27,6 +27,18 @@ const theme = extendTheme(withDefaultColorScheme({ colorScheme: "primary" }), {
             950: "#000103",
         },
     },
+
+    components: {
+        Input: {
+            baseStyle: {
+                field: {
+                    _focus: {
+                        borderColor: "primary.500",
+                    },
+                },
+            },
+        },
+    },
 });
 
 export default theme;

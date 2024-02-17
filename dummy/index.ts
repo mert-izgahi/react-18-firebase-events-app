@@ -5,7 +5,7 @@ const events: EventType[] = [];
 
 const generateEvent = () => {
     const event = {
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         title: faker.lorem.sentence(),
         slug: faker.helpers.slugify(faker.lorem.word()),
         description: faker.lorem.paragraph(),
@@ -19,9 +19,9 @@ const generateEvent = () => {
         isFeatured: faker.datatype.boolean(),
         organizer: faker.person.fullName(),
         ticketLink: faker.internet.url(),
-        ticketPrice: faker.datatype.number(),
-        capacity: faker.datatype.number(),
-        soldTickets: faker.datatype.number(),
+        ticketPrice: faker.number.float({ min: 0, max: 100, precision: 0.01 }),
+        capacity: faker.number.int({ min: 0, max: 100 }),
+        soldTickets: faker.number.int({ min: 0, max: 100 }),
     };
     events.push(event);
 };
